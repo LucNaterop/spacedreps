@@ -1,7 +1,7 @@
 module.exports = {
   servers: {
     one: {
-      host: '138.68.95.87',
+      host: '159.89.21.150',
       username: 'root',
       // pem: './path/to/pem'
       // password: 'server-password'
@@ -25,13 +25,13 @@ module.exports = {
     env: {
       // TODO: Change to your app's url
       // If you are using ssl, it needs to start with https://
-      ROOT_URL: 'http://138.68.95.87',
+      ROOT_URL: 'http://159.89.21.150',
       MONGO_URL: 'mongodb://localhost/meteor',
     },
 
     docker: {
       // change to 'kadirahq/meteord' if your app is not using Meteor 1.4
-      image: 'abernix/meteord:base',
+      image: 'abernix/meteord:node-8.4.0-base',
       // imagePort: 80, // (default: 80, some images EXPOSE different ports)
     },
 

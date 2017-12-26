@@ -5,7 +5,7 @@ export default function forgetCurve(repetitions) {
 	// my assumption: new half value time is the old divided by the probability at which the repetition took place
 	// not sure if it makes sense, but it has nice properties and is very simple
 
-	initialHalfValueTime = 3.0;
+	initialHalfValueTime = 0.01;		// hours
 
 
 	if(repetitions.length <= 1) return function(time) {
@@ -17,11 +17,13 @@ export default function forgetCurve(repetitions) {
 
 	for(var i=1; i<repetitions.length; i++){
 		var dT = (repetitions[i] - repetitions[i-1])/1000/3600 // gives time interval in hours
-		halfValueTime[i] = halfValueTime[i-1]*Math.exp(Math.log(2)*dT/halfValueTime[i-1]);
+		P = Math.exp(-Math.log(2)*dT/halfValueTime[i-1]);
+		halfValueTime[i] = halfValueTime[i-1]/(0.94*P+0.04);
 	}
 
 	return function(time) {
 		var t_star = halfValueTime[halfValueTime.length-1];
+		console.log(t_star)
 		return Math.exp(-Math.log(2)/t_star * time);
 	}
 }
