@@ -5,7 +5,7 @@ export default function forgetCurve(repetitions) {
 	// my assumption: new half value time is the old divided by the probability at which the repetition took place
 	// not sure if it makes sense, but it has nice properties and is very simple
 
-	initialHalfValueTime = 0.01;		// hours
+	initialHalfValueTime = 3;		// hours
 
 
 	if(repetitions.length <= 1) return function(time) {
