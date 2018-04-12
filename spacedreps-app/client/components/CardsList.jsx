@@ -105,6 +105,6 @@ class CardsList extends React.Component {
 
 export default createContainer(() => {
 	return {
-		cards: Cards.find({userId: Meteor.userId()}).fetch()
+		cards: Cards.find(/*{userId: Meteor.userId()}*/).fetch()
 	};
 }, CardsList);
