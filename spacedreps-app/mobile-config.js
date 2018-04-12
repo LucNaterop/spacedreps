@@ -52,5 +52,7 @@ App.icons({
 
 App.accessRule('*');
 
-App.setPreference('StatusBarBackgroundColor', '#fffff');
+App.setPreference('StatusBarBackgroundColor', '#cccccc');
 App.setPreference('StatusBarOverlaysWebView', 'true');
+App.setPreference('StatusBarStyle','lightcontent');
+

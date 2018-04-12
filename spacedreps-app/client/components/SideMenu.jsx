@@ -19,7 +19,7 @@ class SideMenu extends React.Component {
 		this.state = {
 			isOpen: false,
 			contentComponent: <CardsList navigator={this.props.navigator}/>,
-			contentTitle: 'CardsList',
+			contentTitle: 'My Cards',
 		}
 	}
 
