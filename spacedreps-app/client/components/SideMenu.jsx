@@ -15,7 +15,7 @@ export default class SideMenu extends React.Component {
 		super(props);
 		this.state = {
 			isOpen: false,
-			contentComponent: <Login navigator={this.props.navigator}/>,
+			contentComponent: <CardsList navigator={this.props.navigator}/>,
 			contentTitle: 'My Cards',
 		}
 	}

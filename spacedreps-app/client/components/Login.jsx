@@ -7,13 +7,14 @@ import 'onsenui/css/onsenui.css';
 import 'onsenui/css/onsen-css-components.css';
 
 import CardsList from './CardsList';
+import Register from './Register';
 
 export default class Login extends React.Component {
 	constructor(props){
 		super(props);
 		this.state = {
-			email: 'luca@naterop.net',
-			password: 'ottootto',
+			email: '',
+			password: '',
 			authToken: null,
 			userId: null,
 			loading: false
@@ -34,7 +35,10 @@ export default class Login extends React.Component {
       headers: { Accept: 'application/json', 'Content-Type': 'application/json'},
       body: JSON.stringify({ email: this.state.email, password: this.state.password}),})
     .then((response) => response.json()).then((r) => {
-      if(r.status == 'error') alert(r.message);
+      if(!r.status == 'success') {
+      	this.setState({loading: false});
+        ons.notification.toast(r.message, {timeout: 1000});
+      }
       else {
         authInfo = r.data;
         this.setState({'loading': false})
@@ -84,6 +88,9 @@ export default class Login extends React.Component {
 				/>
 				<br /><br />
 				<Ons.Button onClick={this.handleLogin.bind(this)}>Login</Ons.Button>
+				<br /><br />
+				<Ons.Button onClick={() => {this.props.navigator.pushPage({component: Register})}}>No account yet? Register.</Ons.Button>
+
 			</Ons.Page>
 		);
 	}
