@@ -61,18 +61,10 @@ export default class AddCard extends React.Component {
 			'repetitionCount': 0
 		};
 
-	    fetch(BaseAPI + '/cards', {
-	      method: 'POST',
-	      headers: { Accept: 'application/json', 'Content-Type': 'application/json'},
-	      body: JSON.stringify(card)})
-	    .then((response) => response.json()).then((r) => {
-	      if(r.status == 'error') alert(r.message);
-	      else {
+		Globals.authCall('POST',BaseAPI+'/cards',card,r => {
 			ons.notification.toast('card saved 👏', {timeout: 2000});
 			this.props.navigator.popPage();
-	      }
-	    }).catch((error) => { console.error(error); });
-
+		});
 	}
 
 	render() {

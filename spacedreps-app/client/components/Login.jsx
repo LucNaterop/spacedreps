@@ -30,26 +30,24 @@ export default class Login extends React.Component {
   }
 	handleLogin() {
 		this.setState({loading: true});
-    fetch(BaseAPI + '/login', {
-      method: 'POST',
-      headers: { Accept: 'application/json', 'Content-Type': 'application/json'},
-      body: JSON.stringify({ email: this.state.email, password: this.state.password}),})
-    .then((response) => response.json()).then((r) => {
-      if(!r.status == 'success') {
-      	this.setState({loading: false});
-        ons.notification.toast(r.message, {timeout: 1000});
-      }
-      else {
+		onsuccess = (r) => {
         authInfo = r.data;
         this.setState({'loading': false})
         localStorage.setItem('userId', authInfo.userId);
         localStorage.setItem('authToken', authInfo.authToken);
         this.setState({'userId': authInfo.userId, 'authToken': authInfo.authToken});
+				localStorage.setItem('redirectedToLogin', 'no')
         ons.notification.toast('Login successful', {timeout: 1000});
         document.location.href = document.location.href;
-      }
-    }).catch((error) => { console.error(error); });
+		};
+		onerror = (r) => {
+    	this.setState({loading: false});
+      ons.notification.toast(r.message, {timeout: 1000});
+		};
+		var body = { email: this.state.email, password: this.state.password };
+		Globals.call('POST',BaseAPI+'/login',body,onsuccess, onerror);
 	}
+
 	handleLogout() {
     localStorage.removeItem('userId');
     localStorage.removeItem('authToken');
@@ -90,7 +88,10 @@ export default class Login extends React.Component {
 				<Ons.Button onClick={this.handleLogin.bind(this)}>Login</Ons.Button>
 				<br /><br />
 				<Ons.Button onClick={() => {this.props.navigator.pushPage({component: Register})}}>No account yet? Register.</Ons.Button>
-
+				<br /><br />
+				<Ons.Button onClick={() => {document.location.href = document.location.href}}>
+					Experiencing problems? Refresh app!
+				</Ons.Button>
 			</Ons.Page>
 		);
 	}

@@ -18,22 +18,19 @@ export default class Register extends React.Component {
 
 	handleRegister() {
 		this.setState({loading: true});
-    fetch(BaseAPI + '/register', {
-      method: 'POST',
-      headers: { Accept: 'application/json', 'Content-Type': 'application/json'},
-      body: JSON.stringify({ email: this.state.email, password: this.state.password}),})
-    .then((response) => response.json()).then((r) => {
-      if(!r.status == 'success') {
-      	this.setState({loading: false});
-        ons.notification.toast(r.message, {timeout: 1000});
-      }
-      else {
+
+		var body = { email: this.state.email, password: this.state.password };
+		Globals.call('POST',BaseAPI+'/register',body,r => {
+			// on success
       	setTimeout(() => {
 	      	this.setState({loading: false});
 	        ons.notification.toast(r.message, {timeout: 1000});
-      	},1000) 
-      }
-    }).catch((error) => { console.error(error); });
+      	},1000)
+		}, r => {
+			// on error
+		  this.setState({loading: false});
+      ons.notification.toast(r.message, {timeout: 1000});
+		})
 	}
 
 	renderToolbar() {

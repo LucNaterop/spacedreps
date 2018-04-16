@@ -34,16 +34,9 @@ export default class Card extends React.Component {
 		// add a repetition after flip
 		var newCard = this.props.card;
 		newCard.repetitions.push(new Date());
-	    fetch(BaseAPI + '/cards/'+newCard._id, {
-	      method: 'PUT',
-	      headers: { Accept: 'application/json', 'Content-Type': 'application/json'},
-	      body: JSON.stringify(newCard)})
-	    .then((response) => response.json()).then((r) => {
-	      if(r.status == 'error') alert(r.message);
-	      else {
-	      	ons.notification.toast('repetitions updated', {timeout: 1000});
-	      }
-	    }).catch((error) => { console.error(error); });
+		Globals.authCall('PUT',BaseAPI+'/cards/'+newCard._id,newCard,(r) => {
+			ons.notification.toast('repetitions updated', {timeout: 1000});
+		});
 	}
 
 	onFlip() {
@@ -57,13 +50,14 @@ export default class Card extends React.Component {
 	}
 
 	onDelete() {
-		var that = this;
-		alert('todo');
-		return;
-		Cards.remove(this.props.card._id, function() {
-			that.props.navigator.popPage();
-			ons.notification.toast('card deleted', {timeout: 2000});
-		})
+		ons.notification.confirm('delete card?').then(e => {
+			if(e == 1) {
+				Globals.authCall('DELETE',BaseAPI+'/cards/'+this.props.card._id,null, r => {
+			      	ons.notification.toast(r.message, {timeout: 1000});
+			      	this.props.navigator.popPage();
+				})
+			}
+		});
 	}
 
 	render() {

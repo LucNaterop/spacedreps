@@ -11,6 +11,7 @@ import moment from 'moment';
 import Card from './Card.jsx';
 import forgetCurve from '../util/forgetCurve.js';
 import AddCard from './AddCard';
+import Login from './Login';
 
 
 class ListItem extends React.Component {
@@ -67,18 +68,25 @@ export default class CardsList extends React.Component {
 	}
 
 	componentDidMount() {
-    fetch(BaseAPI + '/cards')
-    .then((response) => response.json()).then((r) => {
-      if(r.status == 'error') alert(r.message);
-      else {
-      	setTimeout(() => {
+
+		if(!localStorage.getItem('authToken')){
+			console.log(localStorage.getItem('redirectedToLogin'));
+			if(localStorage.getItem('redirectedToLogin') !== 'yes'){
+				ons.notification.alert('you need to log in').then(() => {
+					localStorage.setItem('redirectedToLogin', 'yes')
+					this.props.navigator.pushPage({component: Login});
+				});
+			}
+			return;
+		}
+
+		Globals.authCall('GET',BaseAPI+'/cards',null,(r) => {
 	        this.setState({
 	          loading: false,
 	          cards: r.data
 	        })
-      	}, 1000)
-      }
-    }).catch((error) => { console.error(error); });
+		})
+
 	}
 
 	renderSearchBar() {
