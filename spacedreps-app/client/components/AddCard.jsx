@@ -1,4 +1,3 @@
-import { Meteor } from 'meteor/meteor';
 import React from 'react';
 
 import ons from 'onsenui';
@@ -22,7 +21,7 @@ export default class AddCard extends React.Component {
 	}
 
 	renderToolbar() {
-		var cardNumber = Meteor.user().profile.cardsCount + 1;
+		var cardNumber = 42;
 		return (
 			<Ons.Toolbar>
 				<div className='center'>Card Number {cardNumber}</div>
@@ -54,18 +53,26 @@ export default class AddCard extends React.Component {
 	onSave() {
 		var that = this;
 		var card = {
-			'userId': Meteor.userId(),
-			'number': Meteor.user().profile.cardsCount + 1,
+			'userId': localStorage.getItem('userId'),
+			'number': Math.round(Math.random()*100),
 			'frontContent': this.state.frontContent,
 			'backContent': this.state.backContent,
 			'repetitions': [new Date()],
 			'repetitionCount': 0
 		};
-		Cards.insert(card, function() {
-			that.props.navigator.popPage();
-			Users.update({'_id': Meteor.userId()}, {$set: {'profile.cardsCount': Meteor.user().profile.cardsCount + 1}});
+
+	    fetch(BaseAPI + '/cards', {
+	      method: 'POST',
+	      headers: { Accept: 'application/json', 'Content-Type': 'application/json'},
+	      body: JSON.stringify(card)})
+	    .then((response) => response.json()).then((r) => {
+	      if(r.status == 'error') alert(r.message);
+	      else {
 			ons.notification.toast('card saved 👏', {timeout: 2000});
-		})
+			this.props.navigator.popPage();
+	      }
+	    }).catch((error) => { console.error(error); });
+
 	}
 
 	render() {

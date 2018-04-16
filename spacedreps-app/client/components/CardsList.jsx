@@ -1,5 +1,3 @@
-import { Meteor } from 'meteor/meteor';
-import { createContainer } from 'meteor/react-meteor-data';
 import React from 'react';
 
 import ons from 'onsenui';
@@ -12,7 +10,7 @@ import moment from 'moment';
 
 import Card from './Card.jsx';
 import forgetCurve from '../util/forgetCurve.js';
-
+import AddCard from './AddCard';
 
 
 class ListItem extends React.Component {
@@ -29,7 +27,8 @@ class ListItem extends React.Component {
 	getPercentage() {
 		var lastRepetition = this.props.card.repetitions[this.props.card.repetitions.length-1];
 		var f = forgetCurve(this.props.card.repetitions);
-		var dt = new Date() - lastRepetition;
+		var now = new Date();
+		var dt = now - (new Date(lastRepetition));
 		dt = dt/(1000*3600);
 		return Math.round(f(dt)*100);
 	}
@@ -57,13 +56,29 @@ class ListItem extends React.Component {
 
 }
 
-class CardsList extends React.Component {
+export default class CardsList extends React.Component {
 
 	constructor(props){
 		super(props);
 		this.state = {
+			loading: true,
 			'searchInput': ''
 		}
+	}
+
+	componentDidMount() {
+    fetch(BaseAPI + '/cards')
+    .then((response) => response.json()).then((r) => {
+      if(r.status == 'error') alert(r.message);
+      else {
+      	setTimeout(() => {
+	        this.setState({
+	          loading: false,
+	          cards: r.data
+	        })
+      	}, 1000)
+      }
+    }).catch((error) => { console.error(error); });
 	}
 
 	renderSearchBar() {
@@ -83,18 +98,23 @@ class CardsList extends React.Component {
 		);
 	}
 
-	render() {
+	renderListItems() {
 		var that = this;
-		var listItems = this.props.cards.filter(function(card) {
+		var listItems = this.state.cards.filter(function(card) {
 			if(card.frontContent.toLowerCase().indexOf(that.state.searchInput.toLowerCase()) > -1) return true;
 			return false;
 		});
 		listItems = listItems.map(card => <ListItem card={card} key={card._id} navigator={this.props.navigator} />)
+		return listItems;
+	}
+
+	render() {
+		var that = this;
 		return (
 			<Ons.Page>
 				<Ons.List>
 					{this.renderSearchBar()}
-			        {listItems}
+			        {this.state.loading ? <Ons.ProgressBar indeterminate /> : this.renderListItems()}
 		        </Ons.List>
 			</Ons.Page>
 		);	
@@ -102,9 +122,3 @@ class CardsList extends React.Component {
 
 }
 
-
-export default createContainer(() => {
-	return {
-		cards: Cards.find(/*{userId: Meteor.userId()}*/).fetch()
-	};
-}, CardsList);

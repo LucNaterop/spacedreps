@@ -7,7 +7,6 @@ export default function forgetCurve(repetitions) {
 
 	initialHalfValueTime = 3;		// hours
 
-
 	if(repetitions.length <= 1) return function(time) {
 		var t_star = initialHalfValueTime;
 		return Math.exp(-Math.log(2)/t_star * time);
@@ -16,14 +15,13 @@ export default function forgetCurve(repetitions) {
 	halfValueTime = [initialHalfValueTime];
 
 	for(var i=1; i<repetitions.length; i++){
-		var dT = (repetitions[i] - repetitions[i-1])/1000/3600 // gives time interval in hours
+		var dT = (new Date(repetitions[i]) - new Date(repetitions[i-1]))/1000/3600 // gives time interval in hours
 		P = Math.exp(-Math.log(2)*dT/halfValueTime[i-1]);
 		halfValueTime[i] = halfValueTime[i-1]/(0.94*P+0.04);
 	}
 
 	return function(time) {
 		var t_star = halfValueTime[halfValueTime.length-1];
-		console.log(t_star)
 		return Math.exp(-Math.log(2)/t_star * time);
 	}
 }

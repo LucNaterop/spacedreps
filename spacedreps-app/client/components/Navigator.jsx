@@ -22,7 +22,7 @@ export default class Navigator extends React.Component {
   render() {
     return (
       <Ons.Navigator
-        initialRoute={{component: Login}}
+        initialRoute={{component: SideMenu}}
         renderPage={this.renderPage.bind(this)}
       />
     );

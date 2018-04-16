@@ -1,5 +1,3 @@
-import { Meteor } from 'meteor/meteor';
-import { createContainer } from 'meteor/react-meteor-data';
 import React from 'react';
 
 import ons from 'onsenui';
@@ -8,24 +6,24 @@ import 'onsenui/css/onsenui.css';
 import 'onsenui/css/onsen-css-components.css';
 
 import CardsList from './CardsList.jsx';
-import Profile from './Profile.jsx';
 import AddCard from './AddCard.jsx';
 import Login from './Login.jsx';
 
-class SideMenu extends React.Component {
+export default class SideMenu extends React.Component {
 
 	constructor(props) {
 		super(props);
 		this.state = {
 			isOpen: false,
-			contentComponent: <CardsList navigator={this.props.navigator}/>,
+			contentComponent: <Login navigator={this.props.navigator}/>,
 			contentTitle: 'My Cards',
 		}
 	}
 
 	componentDidUpdate() {
 		// handle the showing of the login screen
-		if(!Meteor.user()) {
+		return;
+		if(!localStorage.getItem('authToken')) {
 			this.props.navigator.resetPage({
 				'component': Login
 			}, {'animation': 'lift'});
@@ -47,12 +45,16 @@ class SideMenu extends React.Component {
 	}
 
 	renderToolbar() {
+		if(localStorage.getItem('authToken')) 
+			var menuButton = (
+				<Ons.ToolbarButton onClick={this.show.bind(this)}>
+					<Ons.Icon icon='ion-navicon, material:md-menu' />
+				</Ons.ToolbarButton>
+			);
 		return (
 			<Ons.Toolbar>
 				<div className='left'>
-					<Ons.ToolbarButton onClick={this.show.bind(this)}>
-						<Ons.Icon icon='ion-navicon, material:md-menu' />
-					</Ons.ToolbarButton>
+					{menuButton}
 				</div>
 				<div className='center'>{this.state.contentTitle}</div>
 				<div className='right'>
@@ -73,10 +75,9 @@ class SideMenu extends React.Component {
 			},
 			{
 				title: 'Profile',
-				component: <Profile navigator={this.props.navigator}/>
+				component: <Login navigator={this.props.navigator}/>
 			},
 		];
-
 		var sideMenuListItems = sideMenuEntries.map(entry => { return (
 			<Ons.ListItem 
 				tappable
@@ -123,10 +124,3 @@ class SideMenu extends React.Component {
 		);
 	}
 }
-
-
-export default createContainer(() => {
-	return {
-		currentUser: Meteor.user()
-	};
-}, SideMenu);

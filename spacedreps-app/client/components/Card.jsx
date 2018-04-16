@@ -30,9 +30,27 @@ export default class Card extends React.Component {
 		);
 	}
 
+	updateCard() {
+		// add a repetition after flip
+		var newCard = this.props.card;
+		newCard.repetitions.push(new Date());
+	    fetch(BaseAPI + '/cards/'+newCard._id, {
+	      method: 'PUT',
+	      headers: { Accept: 'application/json', 'Content-Type': 'application/json'},
+	      body: JSON.stringify(newCard)})
+	    .then((response) => response.json()).then((r) => {
+	      if(r.status == 'error') alert(r.message);
+	      else {
+	      	ons.notification.toast('repetitions updated', {timeout: 1000});
+	      }
+	    }).catch((error) => { console.error(error); });
+	}
+
 	onFlip() {
 		this.setState({'isFlipped': !this.state.isFlipped}, function() {
 			if(this.state.isFlipped){
+				this.updateCard()
+				return				
 				Cards.update({'_id': this.props.card._id}, {$push: {repetitions: new Date()}});
 			}
 		})	
@@ -40,6 +58,8 @@ export default class Card extends React.Component {
 
 	onDelete() {
 		var that = this;
+		alert('todo');
+		return;
 		Cards.remove(this.props.card._id, function() {
 			that.props.navigator.popPage();
 			ons.notification.toast('card deleted', {timeout: 2000});
@@ -59,7 +79,7 @@ export default class Card extends React.Component {
 							<MathJax math={this.props.card.frontContent} />
 						</Ons.Card>
 
-						<Ons.Card key="back" style={{height: 400}}>
+						<Ons.Card key="back" style={{heightbackContent: 400}}>
 							<MathJax math={this.props.card.backContent} />
 						</Ons.Card>
 					</ReactCardFlip>
