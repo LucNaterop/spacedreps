@@ -81,10 +81,9 @@ export default class CardsList extends React.Component {
 		}
 
 		Globals.authCall('GET',BaseAPI+'/cards',null,(r) => {
-	        this.setState({
-	          loading: false,
-	          cards: r.data
-	        })
+			setTimeout(() => {
+		        this.setState({ loading: false, cards: r.data})
+			}, 500);
 		})
 
 	}

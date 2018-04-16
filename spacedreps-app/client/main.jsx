@@ -27,9 +27,8 @@ Meteor.startup(() => {
 	document.onkeydown = KeyPress
 });
 
-BaseURL = 'http://localhost:3030'; 
-// BaseURL = 'http://159.89.16.187';
-
+// BaseURL = 'http://localhost:3030'; 
+BaseURL = 'http://159.89.16.187';
 BaseAPI = BaseURL + '/srapi/v1';
 
 Globals = {

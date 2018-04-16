@@ -89,6 +89,8 @@ export default class AddCard extends React.Component {
 				</textarea>
 				<h2>Preview</h2>
 				{this.renderPreview()}
+				<br />
+				<br />
 				<Ons.Button onClick={this.onSave.bind(this)}> Save card </Ons.Button>
 			</Ons.Page>
 		);
