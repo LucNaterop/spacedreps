@@ -7,26 +7,18 @@ import 'onsenui/css/onsen-css-components.css';
 
 import CardsList from './CardsList.jsx';
 import AddCard from './AddCard.jsx';
+import Profile from './Profile';
 import Login from './Login.jsx';
 
 export default class SideMenu extends React.Component {
 
 	constructor(props) {
 		super(props);
+		const isLoggedIn = localStorage.getItem('authToken') ? true : false;
 		this.state = {
 			isOpen: false,
-			contentComponent: <CardsList navigator={this.props.navigator}/>,
-			contentTitle: 'My Cards',
-		}
-	}
-
-	componentDidUpdate() {
-		// handle the showing of the login screen
-		return;
-		if(!localStorage.getItem('authToken')) {
-			this.props.navigator.resetPage({
-				'component': Login
-			}, {'animation': 'lift'});
+			contentComponent: isLoggedIn ? <CardsList navigator={this.props.navigator}/> : <Login navigator={this.props.navigator} />,
+			contentTitle: 'My Cards'
 		}
 	}
 
@@ -75,7 +67,7 @@ export default class SideMenu extends React.Component {
 			},
 			{
 				title: 'Profile',
-				component: <Login navigator={this.props.navigator}/>
+				component: <Profile navigator={this.props.navigator}/>
 			},
 		];
 		var sideMenuListItems = sideMenuEntries.map(entry => { return (

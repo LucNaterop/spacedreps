@@ -6,20 +6,19 @@ import * as Ons from 'react-onsenui';
 import 'onsenui/css/onsenui.css';
 import 'onsenui/css/onsen-css-components.css';
 
-import CardsList from './CardsList';
+import SideMenu from './SideMenu';
 import Register from './Register';
 
 export default class Login extends React.Component {
-	constructor(props){
-		super(props);
-		this.state = {
-			email: '',
-			password: '',
-			authToken: null,
-			userId: null,
-			loading: false
-		};
-	}
+
+  state = {
+    email: '',
+    password: '',
+    authToken: null,
+    userId: null,
+    loading: false
+  }
+
   componentDidMount() {
     // need to check if token valid, but we assume that now
     var authToken = localStorage.getItem('authToken');
@@ -38,7 +37,7 @@ export default class Login extends React.Component {
         this.setState({'userId': authInfo.userId, 'authToken': authInfo.authToken});
 				localStorage.setItem('redirectedToLogin', 'no')
         ons.notification.toast('Login successful', {timeout: 1000});
-        document.location.href = document.location.href;
+        this.props.navigator.resetPage({component: SideMenu}, {animation: 'fade'});
 		};
 		onerror = (r) => {
     	this.setState({loading: false});
@@ -54,21 +53,21 @@ export default class Login extends React.Component {
     this.setState({'userId': null, 'authToken': null});
 	}
 
+  renderToolbar() {
+    return (
+      <Ons.Toolbar>
+        <div className='center'>Sign In</div>
+      </Ons.Toolbar>
+    );
+  }
+
 	render() {
 		// if loading
 		if(this.state.loading) return (<Ons.Page><Ons.ProgressBar indeterminate /></Ons.Page>);
 
-		// if logged in
-		if(this.state.authToken) return (
-			<Ons.Page contentStyle={{padding: 20}} renderToolbar={this.renderToolbar}>
-				<p> You are logged in. </p>
-				<Ons.Button onClick={this.handleLogout.bind(this)}>Logout</Ons.Button> <br /> <br />
-			</Ons.Page>
-		)
-
 		// otherwise show login screen
 		return (
-			<Ons.Page contentStyle={{padding: 20}}>
+			<Ons.Page contentStyle={{padding: 10}} renderToolbar={this.renderToolbar.bind(this)}>
 				<h1> Welcome. </h1>
 				<Ons.Input
 					modifier='underbar'
@@ -85,13 +84,13 @@ export default class Login extends React.Component {
 					placeholder='password'
 				/>
 				<br /><br />
-				<Ons.Button onClick={this.handleLogin.bind(this)}>Login</Ons.Button>
+				<Ons.Button modifier="large" onClick={this.handleLogin.bind(this)}>Login</Ons.Button>
 				<br /><br />
-				<Ons.Button onClick={() => {this.props.navigator.pushPage({component: Register})}}>No account yet? Register.</Ons.Button>
+				<a href="#" onClick={() => {this.props.navigator.pushPage({component: Register})}}>No account yet? Register.</a>
 				<br /><br />
-				<Ons.Button onClick={() => {document.location.href = document.location.href}}>
+				<a href="#" onClick={() => {document.location.href = document.location.href}}>
 					Experiencing problems? Refresh app!
-				</Ons.Button>
+				</a>
 			</Ons.Page>
 		);
 	}

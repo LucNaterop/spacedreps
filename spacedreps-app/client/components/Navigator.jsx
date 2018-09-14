@@ -20,9 +20,10 @@ export default class Navigator extends React.Component {
   }
 
   render() {
+    const isLoggedIn = localStorage.getItem('authToken') ? true : false;
     return (
       <Ons.Navigator
-        initialRoute={{component: SideMenu}}
+        initialRoute={{component: isLoggedIn ? SideMenu : Login}}
         renderPage={this.renderPage.bind(this)}
       />
     );
