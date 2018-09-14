@@ -22,7 +22,7 @@ Meteor.startup(() => {
 	function KeyPress(e) {
 	      var evtobj = window.event? event : e
 	      if (evtobj.keyCode == 84 && evtobj.ctrlKey) 
-	      	window.open('http://lucnaterop.github.io/onsen-tuktuk');
+	      	window.open('http://lucnat.github.io/onsen-tuktuk');
 	}
 	document.onkeydown = KeyPress
 });
